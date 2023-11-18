@@ -5,7 +5,7 @@ def nothing(x):
     pass
 
 
-def main(type='video', src=0, format='bgr', edit=False):
+def main(type='video', src=0, format='bgr', edit=False, size=0):
     cv.namedWindow('result')
     cv.createTrackbar('min 1', 'result', 0, 255, nothing)
     cv.createTrackbar('min 2', 'result', 0, 255, nothing)
@@ -36,6 +36,8 @@ def main(type='video', src=0, format='bgr', edit=False):
 
         if edit:
             frame = cv.medianBlur(frame, 3)
+        if size:
+            frame = cv.resize(frame, size)
 
         min1 = cv.getTrackbarPos('min 1', 'result')
         min2 = cv.getTrackbarPos('min 2', 'result')
@@ -43,7 +45,7 @@ def main(type='video', src=0, format='bgr', edit=False):
         max1 = cv.getTrackbarPos('max 1', 'result')
         max2 = cv.getTrackbarPos('max 2', 'result')
         max3 = cv.getTrackbarPos('max 3', 'result')
-
+        
         mask = cv.inRange(frame, (min1, min2, min3), (max1, max2, max3))
         corrected_frame = cv.bitwise_and(frame, frame, mask=mask)
         if edit:
@@ -63,5 +65,7 @@ if __name__ == "__main__":
     # type - input type (by default - video, you can choose 'image')
     # src - video file path (by default 0 - webcam),
     # format - video format (by default 'bgr', you can choose 'rgb', 'hsv', 'lab')
-    main(type='image', src='../assets/sample.jpg')
-    cv.waitKey(10000)
+	 # edit - enable/disable filters (by default True)
+	 # size - new size of image/video. You can use it шf the top edge of the trackbars extends beyond the window
+	 # example: main(type='image', src='./HSV-corrector/assets/sample.jpg', format='hsv')
+    main()
